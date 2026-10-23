@@ -1,1 +1,278 @@
 
+from manim import *
+import random
+import numpy as np
+import struct
+
+config.background_color = "#1E1E1E"
+MarkupText.set_default(font = "Manrope")
+Text.set_default(font = "Manrope")
+Circumscribe.set_default(color=WHITE)
+Indicate.set_default(color="#AA77C7")
+
+
+class AulaCompleta(Scene):
+    def construct(self):
+
+        Inicio.construct(self)
+        ComplementoDeDois.construct(self)
+        Duvida.construct(self)
+        BandeiraDeSinal.construct(self)
+        SinalEMagnitude.construct(self)
+        SomaPositivoNegativo.construct(self)
+
+
+class Inicio(Scene):
+    def construct(self):
+
+        computador = SVGMobject("assets/Computador.svg")
+        computador.set_color(WHITE)
+        computador.scale(3)
+
+        negativos = Table(
+            [["-1,", "-2,", "-3,"],
+             ["-4,", "-5,", "-6,"],
+             ["-7,", "-8,", "-9..."]],
+             line_config={"stroke_width":0},
+            v_buff=0.3,
+            h_buff=0.3,)
+        negativos.scale(0.7)
+        negativos.move_to([-0.9, 1.3, 0])
+
+        self.play(Write(computador), run_time=1.5)
+        self.play(Create(negativos), run_time=1.3)
+        self.play(FadeOut(computador),
+                  FadeOut(negativos), run_time=0.8)
+        self.wait()
+
+
+class ComplementoDeDois(Scene):
+    def construct(self):
+
+        complemento_de_dois = Text("Complemento de Dois")
+        complemento_de_dois.set_color("#AA77C7")
+        complemento_de_dois.scale(1.7)
+
+        bits = ["0", "1", "0", "1"]
+
+        bits_novos = ["1", "0", "1", "0"]
+
+        caixas = VGroup()
+        for i in range(len(bits)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas.add(dupla)
+        caixas.arrange(RIGHT, buff=0)
+        caixas.move_to([0, -0.5, 0])
+
+        seta = Triangle(color=YELLOW, fill_opacity=0.5)
+        seta.scale(0.5)
+        seta.move_to([-3, -1.9, 0])
+
+        texto_novo0 = Text(bits_novos[0]).move_to(caixas[0].get_center())
+        texto_novo0.scale(1.6)
+
+        texto_novo1 = Text(bits_novos[1]).move_to(caixas[1].get_center())
+        texto_novo1.scale(1.6)
+
+        texto_novo2 = Text(bits_novos[2]).move_to(caixas[2].get_center())
+        texto_novo2.scale(1.6)
+
+        texto_novo3 = Text(bits_novos[3]).move_to(caixas[3].get_center())
+        texto_novo3.scale(1.6)
+
+        texto_novo4 = Text('1', color=YELLOW).move_to(caixas[3].get_center())
+        texto_novo4.scale(1.6)
+
+        mais_um = Text('+1', color=YELLOW)
+        mais_um.scale(0.9)
+        mais_um.move_to([3, 0.9, 0])
+
+
+        self.play(Write(complemento_de_dois))
+        self.wait(0.5)
+        self.play(complemento_de_dois.animate.move_to([0, 2.3, 0]).scale(0.9))
+        self.play(FadeIn(caixas))
+        self.wait()
+        self.play(FadeIn(seta),
+                  FadeTransform(caixas[0][1], texto_novo0))
+        self.play(seta.animate.move_to([-1, -1.9, 0]),
+                  FadeTransform(caixas[1][1], texto_novo1))
+        self.play(seta.animate.move_to([1, -1.9, 0]),
+                  FadeTransform(caixas[2][1], texto_novo2)
+        )
+        self.play(seta.animate.move_to([3, -1.9, 0]),
+                  FadeTransform(caixas[3][1], texto_novo3))
+        self.play(FadeOut(seta))
+        self.play(FadeIn(mais_um))
+        self.play(FadeOut(mais_um),
+                  FadeTransform(texto_novo3, texto_novo4))
+        self.wait()
+        self.play(FadeOut(complemento_de_dois),
+                  FadeOut(caixas[0][0]),
+                  FadeOut(caixas[1][0]),
+                  FadeOut(caixas[2][0]),
+                  FadeOut(caixas[3][0]),
+                  FadeOut(texto_novo0),
+                  FadeOut(texto_novo1),
+                  FadeOut(texto_novo2),
+                  FadeOut(texto_novo4))
+        self.wait()
+
+
+class Duvida(Scene):
+    def construct(self):
+
+        duvida = Text('Como representar números negativos?')
+
+        self.play(Write(duvida))
+        self.wait()
+        self.play(FadeOut(duvida))
+        self.wait()
+
+
+class BandeiraDeSinal(Scene):
+    def construct(self):
+
+        bits = ['1', '0', '1','1']
+
+        caixas = VGroup()
+        for i in range(len(bits)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas.add(dupla)
+        caixas.arrange(RIGHT, buff=0)
+
+        bit0 = Text('0').move_to(caixas[0].get_center())
+        bit0.scale(1.6)
+
+        positivo = Text('Positivo', color=YELLOW)
+        positivo.move_to([-3, 1.6, 0])
+        positivo.scale(0.9)
+
+        negativo = Text('Negativo', color=YELLOW)
+        negativo.move_to([-3, 1.6, 0])
+        negativo.scale(0.9)
+
+        self.play(FadeIn(caixas))
+        self.play(caixas[0][0].animate.set_fill(color=WHITE, opacity=0.7), run_time=0.25)
+        self.play(caixas[0][0].animate.set_fill(opacity=0), run_time=0.25)
+        self.wait()
+        self.play(FadeTransform(caixas[0][1], bit0),
+                  Write(positivo))
+        self.wait(1.5)
+        self.play(FadeTransform(bit0, caixas[0][1]),
+                  Transform(positivo, negativo))
+        self.wait()
+        self.play(FadeOut(positivo))
+        self.play(FadeOut(caixas))
+        self.wait()
+
+
+class SinalEMagnitude(Scene):
+    def construct(self):
+
+        sinal_e_magnitude = Text('Sinal e Magnitude', color="#AA77C7")
+        sinal_e_magnitude.scale(1.8)
+
+        circuito = SVGMobject("assets/Circuito.svg")
+        circuito.set_color(WHITE)
+        circuito.scale(2)
+        circuito.move_to([0, -1, 0])
+
+        self.play(Write(sinal_e_magnitude))
+        self.wait()
+        self.play(sinal_e_magnitude.animate.move_to([0, 2, 0]))
+        self.play(FadeIn(circuito))
+        self.wait()
+        self.play(FadeOut(sinal_e_magnitude),
+                  FadeOut(circuito))
+        self.wait()
+
+
+class SomaPositivoNegativo(Scene):
+    def construct(self):
+
+        bits1 = ['0', '1', '0', '1']
+
+        caixas1 = VGroup()
+        for i in range(len(bits1)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits1[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas1.add(dupla)
+        caixas1.arrange(RIGHT, buff=0)
+
+        bits2 = ['1', '1', '0', '1']
+
+        caixas2 = VGroup()
+        for i in range(len(bits2)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits2[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas2.add(dupla)
+        caixas2.arrange(RIGHT, buff=0)
+        caixas2.move_to([0, 0, 0])
+        caixas2.scale(0.65)
+
+        sinal_de_mais = Text('+', color=YELLOW)
+        sinal_de_mais.move_to([-3, 0, 0])
+
+        linha = Line(start=[-2.8, -1, 0], end=[2.8, -1, 0], color=YELLOW)
+
+        bits3 = ['1', '0', '0', '1', '0']
+
+        caixas3 = VGroup()
+        for i in range(len(bits3)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits3[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas3.add(dupla)
+        caixas3.arrange(RIGHT, buff=0)
+        caixas3.move_to([-0.6, -2, 0])
+        caixas3.scale(0.65)
+
+        bits4 = ['0', '0', '1', '0']
+
+        caixas4 = VGroup()
+        for i in range(len(bits4)):
+            quadrado = Square(color="#AA77C7")
+            texto = Text(bits4[i])
+            texto.move_to(quadrado.get_center())
+            texto.scale(1.6)
+            dupla = VGroup(quadrado, texto)
+            caixas4.add(dupla)
+        caixas4.arrange(RIGHT, buff=0)
+        caixas4.move_to([0, -2, 0])
+        caixas4.scale(0.65)
+
+        self.play(FadeIn(caixas1))
+        self.wait()
+        self.play(caixas1.animate.move_to([0, 1.9, 0]).scale(0.65))
+        self.play(FadeIn(caixas2),
+                  Write(sinal_de_mais),
+                  Write(linha))
+        self.play(FadeIn(caixas3))
+        self.play(caixas3.animate.rotate(0.1), run_time=0.1, rate_func=there_and_back)
+        self.play(caixas3.animate.rotate(0.1), run_time=0.1, rate_func=there_and_back)
+        self.play(FadeTransform(caixas3, caixas4), run_time=0.15)
+        self.wait()
+        self.remove(caixas3)
+        self.play(FadeOut(caixas1),
+                  FadeOut(caixas2),
+                  FadeOut(sinal_de_mais),
+                  FadeOut(linha),
+                  FadeOut(caixas4))
+        self.wait()
